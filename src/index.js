@@ -151,13 +151,18 @@ async function renderResult() {
   // The null check makes sure the UI is not in the middle of changing to a
   // different model. If during model change, the result is from an old model,
   // which shouldn't be rendered.
+  let degOut = document.getElementById("degree-output");
+  let timeOut = document.getElementById("bad-posture");
   if (hands && hands.length > 0 && !STATE.isModelChanged) {
     camera.drawResults(hands);
     let degree = degreePoints(hands, 0, 9);
+    degree = degree.toFixed(5);
     if (degree >= 35) {
       if (badPosture) {
         endTime = new Date();
         var timeDiff = (endTime - startTime) / 1000;
+        timeDiff = timeDiff.toFixed(3);
+        timeOut.innerHTML = `Bad posture held for: ${timeDiff}`;
         if (timeDiff >= 5) {
           console.log("uh oh spaghettio");
           soundPlayer.play()
@@ -168,9 +173,11 @@ async function renderResult() {
       }
     } else {
       badPosture = false;
+      timeOut.innerHTML = `Bad posture held for: 0`;
       soundPlayer.pause();
       soundPlayer.currentTime = 0;
     }
+    degOut.innerHTML = `Degree between wrist and middle knuckle: ${degree}`;
 
     console.log(degree);
   }
