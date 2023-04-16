@@ -15,6 +15,7 @@
     "@tensorflow/tfjs-backend-webgl": "^4.4.0",
     "@tensorflow/tfjs-converter": "^4.4.0",
     "@tensorflow/tfjs-core": "^4.4.0",
+    "johnny-five": "^2.1.0",
     "scatter-gl": "0.0.8"
   },
   "scripts": {

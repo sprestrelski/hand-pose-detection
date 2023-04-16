@@ -113,6 +113,7 @@ function endEstimateHandsStats() {
 
 var startTime, endTime;
 var badPosture;
+var soundPlayer = new Audio('https://soundbible.com/mp3/glass_ping-Go445-1207030150.mp3');
 async function renderResult() {
   if (camera.video.readyState < 2) {
     await new Promise((resolve) => {
@@ -152,17 +153,14 @@ async function renderResult() {
   // which shouldn't be rendered.
   if (hands && hands.length > 0 && !STATE.isModelChanged) {
     camera.drawResults(hands);
-    let wrist = hands[0].keypoints3D[0];
-    let mpc = hands[0].keypoints3D[9];
-    let height = Math.abs(wrist.y - mpc.y);
-    let s = Math.sqrt((wrist.x - mpc.x) * (wrist.x - mpc.x)
-                      + (wrist.z - mpc.z) * (wrist.z - mpc.z));
-    if (180 / Math.PI * Math.atan(height / s) >= 35) {
+    let degree = degreePoints(hands, 0, 9);
+    if (degree >= 35) {
       if (badPosture) {
         endTime = new Date();
         var timeDiff = (endTime - startTime) / 1000;
         if (timeDiff >= 5) {
           console.log("uh oh spaghettio");
+          soundPlayer.play()
         }
       } else {
         badPosture = true;
@@ -170,10 +168,21 @@ async function renderResult() {
       }
     } else {
       badPosture = false;
+      soundPlayer.pause();
+      soundPlayer.currentTime = 0;
     }
 
-    console.log(180 / Math.PI * Math.atan(height / s));
+    console.log(degree);
   }
+}
+
+function degreePoints(hands, num_1, num_2) {
+  let wrist = hands[0].keypoints3D[num_1];
+  let mpc = hands[0].keypoints3D[num_2];
+  let height = Math.abs(wrist.y - mpc.y);
+  let s = Math.sqrt((wrist.x - mpc.x) * (wrist.x - mpc.x)
+                    + (wrist.z - mpc.z) * (wrist.z - mpc.z));
+  return 180 / Math.PI * Math.atan(height / s);
 }
 
 async function renderPrediction() {
