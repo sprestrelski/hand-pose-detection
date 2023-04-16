@@ -157,7 +157,7 @@ async function renderResult() {
     camera.drawResults(hands);
     let degree = degreePoints(hands, 0, 9);
     degree = degree.toFixed(5);
-    if (degree >= 35) {
+    if (degree >= 30) {
       if (badPosture) {
         endTime = new Date();
         var timeDiff = (endTime - startTime) / 1000;
